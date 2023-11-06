@@ -1,0 +1,38 @@
+import { Box, Button, IconButton, Typography } from "@mui/material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import { GalleryType } from "../types/gallery";
+import { BORDER_COLOR, LOREM_TEXT_DESCRIPTION, RADIUS } from "../constant";
+import { onDownloadPicture } from "../helper";
+import { ArrowBackIosOutlined } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+
+const PictureDetails = ({ picture } : { picture: GalleryType }): JSX.Element => {
+  const navigate = useNavigate();
+
+  const goToBack = (): void => navigate(-1);
+
+  return (
+    <Box>
+      <Button onClick={goToBack} sx={{ marginBottom: 2}}><ArrowBackIosOutlined /> Volver</Button>
+      <Box display='flex' flexDirection='row' justifyContent='center' alignItems='center' borderRadius={RADIUS} border={1} borderColor={BORDER_COLOR}>
+        <Box component='img' src={picture?.download_url} width='60%' alt={picture?.author} borderRadius={RADIUS} />
+        <Box display='flex' flexDirection='column' width='40%' padding={4}>
+          <Typography variant='h4' >{picture?.author}</Typography>
+          <Typography paragraph>{LOREM_TEXT_DESCRIPTION}</Typography>
+          <Box>
+            <Typography variant='subtitle2'>Ancho: {picture?.width}px</Typography>
+            <Typography variant='subtitle2'>Alto: {picture?.height}px</Typography>
+          </Box>
+          <Box display='flex' width='100%' justifyContent='end' marginTop={2} gap={2} >
+            <IconButton aria-label="add to favorites">
+              <FavoriteIcon color="inherit" />
+            </IconButton>
+            <Button variant='contained' onClick={() => onDownloadPicture(picture)}>Descargar</Button>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  )
+}
+
+export default PictureDetails
