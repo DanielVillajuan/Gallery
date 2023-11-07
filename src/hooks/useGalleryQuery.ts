@@ -22,14 +22,16 @@ export const useScrollGalleryQuery = () => {
   );
 }
 
-export const useOneGalleryQuery = (id: string | undefined): UseQueryResult<GalleryType> => {
+export const useOneGalleryQuery = (id: string): UseQueryResult<GalleryType> => {
+  const queryClient = useQueryClient();
 
   const fetchGallery = async () => {
     const data =  await http.get<GalleryType>(import.meta.env.VITE_APP_ENDPOINT_ID + id + import.meta.env.VITE_APP_ENDPOINT_DETAILS)
-    return data
+    const oneG = queryClient.getQueryData<GalleryType>(data.id)
+    return {...data, isFavorite: Boolean(oneG?.isFavorite)}
   }
 
-  return useQuery<GalleryType>(['gallery',id], fetchGallery);
+  return useQuery<GalleryType>([id], fetchGallery);
 }
 
 export const useMutationOneGallery = () => {
@@ -38,6 +40,7 @@ export const useMutationOneGallery = () => {
   return useMutation({
     mutationFn: (picture: GalleryType) => new Promise<GalleryType>((resolve) => resolve(picture)),
     onSuccess: (data: GalleryType) => {
+      queryClient.setQueryData([data.id], {...data, isFavorite: !data.isFavorite })
       queryClient.setQueryData(['gallery'], (preData?: GalleryType[]) => {
         if(preData == null) return []
         return preData.map(p => {

@@ -1,19 +1,21 @@
-import { Box, Button, IconButton, Typography } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import { Box, Button, Typography } from "@mui/material";
 import { GalleryType } from "../types/gallery";
 import { BORDER_COLOR, LOREM_TEXT_DESCRIPTION, RADIUS } from "../constant";
 import { onDownloadPicture } from "../helper";
 import { ArrowBackIosOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useOneGalleryQuery } from "../hooks/useGalleryQuery";
+import LikeButton from "./LikeButton";
+import Loading from "./Loading";
 
 const PictureDetails = ({ picture } : { picture: GalleryType }): JSX.Element => {
   const navigate = useNavigate();
 
-  const { data } = useOneGalleryQuery(picture.id);
-  console.log(data)
+  const { data, isLoading } = useOneGalleryQuery(picture.id);
 
   const goToBack = (): void => navigate(-1);
+
+  if(isLoading) return <Loading />
 
   return (
     <Box>
@@ -28,9 +30,7 @@ const PictureDetails = ({ picture } : { picture: GalleryType }): JSX.Element => 
             <Typography variant='subtitle2'>Alto: {picture?.height}px</Typography>
           </Box>
           <Box display='flex' width='100%' justifyContent='end' marginTop={2} gap={2} >
-            <IconButton aria-label="add to favorites">
-              <FavoriteIcon color="inherit" />
-            </IconButton>
+            {data && <LikeButton item={data}/>}
             <Button variant='contained' onClick={() => onDownloadPicture(picture)}>Descargar</Button>
           </Box>
         </Box>
