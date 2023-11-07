@@ -9,14 +9,7 @@ export type GalleryType = {
 }
 
 export type GalleryStore = {
-  favorites: GalleryType[],
-  addToFavorite: (item: GalleryType) => void,
   page: number,
   setPage: () => void
 }
 
-
-export type QueryGalleryType = {
-  nextCursor?: number,
-  gallery: GalleryType[]
-}

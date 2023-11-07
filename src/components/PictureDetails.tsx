@@ -5,9 +5,13 @@ import { BORDER_COLOR, LOREM_TEXT_DESCRIPTION, RADIUS } from "../constant";
 import { onDownloadPicture } from "../helper";
 import { ArrowBackIosOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { useOneGalleryQuery } from "../hooks/useGalleryQuery";
 
 const PictureDetails = ({ picture } : { picture: GalleryType }): JSX.Element => {
   const navigate = useNavigate();
+
+  const { data } = useOneGalleryQuery(picture.id);
+  console.log(data)
 
   const goToBack = (): void => navigate(-1);
 

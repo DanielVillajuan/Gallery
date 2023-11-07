@@ -15,7 +15,7 @@ const GalleryItem = ({ item }: { item: GalleryType }): JSX.Element => {
       }}
     >
       <CardMedia
-        onClick={() => navigate(`${item.id}/details`)}
+        onClick={() => navigate(`/images/${item.id}`)}
         component='img'
         height={180}
         image={item.download_url}
