@@ -1,26 +1,25 @@
-import { UseQueryResult, useInfiniteQuery, useQuery } from "react-query";
-import { GalleryType, QueryGalleryType } from "../types/gallery";
+import { UseQueryResult, useMutation, useQuery, useQueryClient } from "react-query";
+import { GalleryType } from "../types/gallery";
 import { http } from "../services";
+import { useGallery } from "./useGallery";
 
 
-export const useInfiniteGalleryQuery = () => {
+export const useScrollGalleryQuery = () => {
+  const page = useGallery((state) => state.page);
+  const setPage = useGallery((state) => state.setPage);
+  const queryClient = useQueryClient();
 
-  const fetchGallery = async ({ pageParam = 1 }: { pageParam?: number }) => {
-    const data =  await http.get<GalleryType[]>(import.meta.env.VITE_APP_ENDPOINT_LIST + `?page=${pageParam}&limit=9`)
-    return {
-      gallery: data,
-      nextCursor: pageParam + 1
-    }
+  const fetchGallery = async () => {
+    const data =  await http.get<GalleryType[]>(import.meta.env.VITE_APP_ENDPOINT_LIST + `?page=${page}&limit=9`)
+    const preData = queryClient.getQueryData<GalleryType[]>('gallery') || []
+    setPage();
+    return preData.concat(data)
   }
-  const { data, ...rest } = useInfiniteQuery<QueryGalleryType>(
+  return useQuery<GalleryType[]>(
     ['gallery'],
     fetchGallery,
-    { refetchOnWindowFocus: false, getNextPageParam: (lastPage) => lastPage.nextCursor }
+    { refetchOnWindowFocus: false, refetchOnMount: false }
   );
-
-  const flapMap = data?.pages.flatMap(({ gallery }) => gallery) || [];
-
-  return { ...rest, data: flapMap }
 }
 
 export const useOneGalleryQuery = (id: string | undefined): UseQueryResult<GalleryType> => {
@@ -30,5 +29,22 @@ export const useOneGalleryQuery = (id: string | undefined): UseQueryResult<Galle
     return data
   }
 
-  return useQuery<GalleryType>(['OneGallery'], fetchGallery);
+  return useQuery<GalleryType>(['gallery',id], fetchGallery);
+}
+
+export const useMutationOneGallery = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (picture: GalleryType) => new Promise<GalleryType>((resolve) => resolve(picture)),
+    onSuccess: (data: GalleryType) => {
+      queryClient.setQueryData(['gallery'], (preData?: GalleryType[]) => {
+        if(preData == null) return []
+        return preData.map(p => {
+          if(p.id === data.id) return { ...p, isFavorite: !p.isFavorite }
+          return p
+        })
+      })
+    }
+  })
 }

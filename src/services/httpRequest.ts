@@ -11,10 +11,10 @@ export class HttpRequest {
         this.axiosAbort = new AbortController();
     }
 
-    private async request<T>( method: METHOD,{ endpoint, data, params }: { endpoint: string, data?: T, params?: AxiosRequestConfig }): Promise<T>{
+    private async request<T>( method: METHOD,{ endpoint, params }: { endpoint: string, params?: AxiosRequestConfig }): Promise<T>{
         const config: AxiosRequestConfig = { ...params };
         config.signal =  this.axiosAbort.signal;
-        const  response =  method === METHOD.GET || method === METHOD.DELETE ? await this.axiosInstance[method]<T>(endpoint,config) : await this.axiosInstance[method]<T>(endpoint,data,config);
+        const  response =  await this.axiosInstance[method]<T>(endpoint,config);
         return response.data;
     }
 
@@ -22,16 +22,5 @@ export class HttpRequest {
         return await this.request(METHOD.GET, { endpoint, params });
     }
 
-    async delete<T>(endpoint: string, params?: AxiosRequestConfig): Promise<T>{
-        return await this.request(METHOD.DELETE, { endpoint, params });
-    }
-
-    async post<T>(endpoint: string, data?: T ,params?: AxiosRequestConfig): Promise<T>{
-        return await this.request(METHOD.POST, { endpoint, data, params });
-    }
-
-    async put<T>(endpoint: string, data?: T ,params?: AxiosRequestConfig): Promise<T>{
-        return await this.request(METHOD.PUT, { endpoint, data, params });
-    }
 }
 

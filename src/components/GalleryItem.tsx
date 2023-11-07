@@ -3,7 +3,7 @@ import { GalleryType } from "../types/gallery"
 import { useNavigate } from "react-router-dom";
 import LikeButton from "./LikeButton";
 
-const GalleryItem = ({ item: { author, download_url, id } }: { item: GalleryType }): JSX.Element => {
+const GalleryItem = ({ item }: { item: GalleryType }): JSX.Element => {
   const navigate = useNavigate();
   return (
     <Card
@@ -15,20 +15,20 @@ const GalleryItem = ({ item: { author, download_url, id } }: { item: GalleryType
       }}
     >
       <CardMedia
-        onClick={() => navigate(`${id}/details`)}
+        onClick={() => navigate(`${item.id}/details`)}
         component='img'
         height={180}
-        image={download_url}
-        alt={author}
+        image={item.download_url}
+        alt={item.author}
         sx={{ objectFit: 'cover', cursor: 'pointer',}}
       />
       <CardContent>
         <Typography variant="body2" textAlign='center' color="text.secondary">
-          {author}
+          {item.author}
         </Typography>
       </CardContent>
       <CardActions sx={{ justifyContent: 'end' }} disableSpacing>
-        <LikeButton />
+        <LikeButton item={item} />
       </CardActions>
     </Card>
   )

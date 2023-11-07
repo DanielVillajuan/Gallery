@@ -4,14 +4,15 @@ export type GalleryType = {
   width: number,
   height: number,
   url: string,
-  download_url: string
+  download_url: string,
+  isFavorite?: boolean
 }
 
 export type GalleryStore = {
-  galleryList: GalleryType[],
-  setGalleryList: (galleryList: GalleryType[]) => void,
+  favorites: GalleryType[],
+  addToFavorite: (item: GalleryType) => void,
   page: number,
-  limit: number
+  setPage: () => void
 }
 
 
