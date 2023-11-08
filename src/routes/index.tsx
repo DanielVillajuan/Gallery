@@ -6,6 +6,7 @@ import ImageDetails from '../pages/ImageDetails';
 import NotFound from '../pages/NotFound';
 import { ROUTES } from '../enums/routes';
 import Navigation from '../components/Navigation';
+import ProtectedRoute from './ProtectedRoute';
 
 export default function AppRoutes(): JSX.Element {
   return (
@@ -13,7 +14,7 @@ export default function AppRoutes(): JSX.Element {
         <Routes>
           <Route path={ROUTES.HOME} element={<Home />} />
           <Route path={ROUTES.LOGIN} element={<Login />} />
-          <Route path={ROUTES.USERGALLERY} element={<UserGallery />} />
+          <Route path={ROUTES.USERGALLERY} element={<ProtectedRoute Component={UserGallery} />} />
           <Route path={ROUTES.IMGDETAILS} element={<ImageDetails />} />
           <Route path={ROUTES.NOTFOUND} element={<NotFound />} />
         </Routes>
