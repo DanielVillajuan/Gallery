@@ -7,7 +7,7 @@ import PictureDetails from "../components/PictureDetails";
 
 
 const ImageDetails = (): JSX.Element => {
-  const { id } = useParams();
+  const { id = '' } = useParams();
   const { data: picture, isLoading } = useOneGalleryQuery(id);
 
   if(isLoading) return <Loading />
